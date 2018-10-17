@@ -1,0 +1,16 @@
+if ((ball.getCenter()[1] >= this.getH()) || (ball.getCenter()[1] <= 0)) {
+            if ((ball.getDirection()[0].equals(1) && ball.getDirection()[1].equals(1)) || (ball.getDirection()[0].equals(1) && ball.getDirection()[1].equals(-1)))
+              ball.setDirection(1, ball.getDirection()[1] * -1);
+            else if ((ball.getDirection()[0].equals(-1) && ball.getDirection()[1].equals(1)) || (ball.getDirection()[0].equals(-1) && ball.getDirection()[1].equals(-1)))
+                ball.setDirection(-1, ball.getDirection()[1] * -1);
+        } else if (ball.collide(player1)) {
+	    if (ball.getDirection()[0].equals(-1) && ball.getDirection()[1].equals(-1))
+                ball.setDirection(1, -1);
+            else if (ball.getDirection()[0].equals(-1) && ball.getDirection()[1].equals(1))
+                ball.setDirection(1, 1);
+        } else if (ball.collide(player2)) {
+	    if (ball.getDirection()[0].equals(1) && ball.getDirection()[1].equals(1))
+                ball.setDirection(-1, 1);
+            else if (ball.getDirection()[0].equals(1) && ball.getDirection()[1].equals(-1))
+                ball.setDirection(-1, -1);
+        }
