@@ -14,15 +14,15 @@ public class Ball extends Asset {
 
     @Override
     public void render(Canvas canvas) {
-        this.setXPos(this.getXPos() + directionX);
-        this.setYPos(this.getYPos() + directionY);
+        this.setXPos(this.getXPos() + directionX * speed);
+        this.setYPos(this.getYPos() + directionY * speed);
         super.render(canvas);
 
     }
 
     public void setDirection(Integer dirX, Integer dirY) {
-        this.directionX = dirX * speed;
-        this.directionY = dirY * speed;
+        this.directionX = dirX;
+        this.directionY = dirY;
     }
 
     public Boolean collide(Player player) {
@@ -34,6 +34,10 @@ public class Ball extends Asset {
     }
 
     public Integer[] getDirection() {
-        return new Integer[] { directionX / speed, directionY / speed };
+        return new Integer[] { directionX, directionY };
+    }
+
+    public void setSpeed(Integer speed) {
+        this.speed = speed;
     }
 }

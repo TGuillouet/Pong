@@ -34,6 +34,20 @@ public class Asset {
         paint.setTypeface(Typeface.createFromAsset(appContext.getAssets(), "fonts/Cave-Story.ttf"));
     }
 
+    public Asset(Context appContext, Integer posX, Integer posY, Integer fontSize, Integer width, Integer height) {
+        this.xPos = posX;
+        this.yPos = posY;
+        this.basePosX = posX;
+        this.basePosY = posY;
+        this.w = width;
+        this.h = height;
+
+        paint = new Paint();
+        paint.setTextSize(fontSize);
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(Typeface.createFromAsset(appContext.getAssets(), "fonts/Cave-Story.ttf"));
+    }
+
     public Asset(Integer w, Integer h, Integer posX, Integer posY, Paint paint) {
         this.w = w;
         this.h = h;
@@ -105,5 +119,29 @@ public class Asset {
 
     public Paint getPaint() {
         return paint;
+    }
+
+    public static Integer getTextWidth(Button text, Paint paint) {
+        Rect r = new Rect();
+        paint.getTextBounds(text.getBtnText(), 0, text.getBtnText().length(), r);
+        return r.width();
+    }
+
+    public static Integer getTextHeight(Button text, Paint paint) {
+        Rect r = new Rect();
+        paint.getTextBounds(text.getBtnText(), 0, text.getBtnText().length(), r);
+        return r.height();
+    }
+
+    public static Integer getTextWidth(Text text, Paint paint) {
+        Rect r = new Rect();
+        paint.getTextBounds(text.getText(), 0, text.getText().length(), r);
+        return r.width();
+    }
+
+    public static Integer getTextHeight(Text text, Paint paint) {
+        Rect r = new Rect();
+        paint.getTextBounds(text.getText(), 0, text.getText().length(), r);
+        return r.height();
     }
 }

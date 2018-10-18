@@ -1,43 +1,56 @@
 package tguillouet.itescia.GameObject;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class Button extends Asset /*implements View.OnTouchListener */ implements View.OnClickListener {
+import tguillouet.itescia.Menu.MenuActivity;
+
+public class Button extends Asset /* implements View.OnTouchListener */ /*implements View.OnClickListener*/ {
 
     private String btnText;
+    private Paint innerPaint;
 
-    public Button(String text, Integer posX, Integer posY, Integer fontSize, Context appContext) {
-        super(appContext, posX, posY, fontSize);
+    private Rect containerRect;
+    private Rect innerRect;
+
+    public Button(String text, Integer posX, Integer posY, Integer width, Integer height, Integer fontSize, Context appContext) {
+        super(appContext, posX, posY, fontSize, width, height);
         this.btnText = text;
+
+        this.innerPaint = new Paint();
+        this.innerPaint.setColor(Color.BLACK);
+
+        Integer textWidth = getTextWidth(this, this.getPaint());
+        Integer textHeight = getTextHeight(this, this.getPaint());
+
+        containerRect = new Rect(this.getXPos() - (Math.round(textWidth * 1.2f) / 2),
+                                 this.getYPos() - (Math.round(textHeight * 1.7f) / 2),
+                                this.getXPos() + (Math.round(textWidth * 1.2f) / 2),
+                              this.getYPos() + (Math.round(textHeight * 2.5f) / 2));
+//
+//        innerRect = new Rect(this.getXPos() - (Math.round(textWidth * 1.1f) / 2),
+//                             this.getYPos() - (Math.round(textHeight * 1.2f) / 2),
+//                            this.getXPos() + (Math.round(textWidth * 1.1f) / 2),
+//                          this.getYPos() + (Math.round(textHeight * 2.0f) / 2));
     }
 
-    public Button(Integer w, Integer h, Integer posX, Integer posY, Paint paint) {
-        super(w, h, posX, posY, paint);
+    public Boolean getTouch(MotionEvent event){
+        return containerRect.contains((int) event.getX(), (int) event.getY());
     }
-
-    /*@Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch(event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-
-                break;
-        }
-        return false;
-    }*/
 
     @Override
-    public void onClick(View v) {
-        System.out.println("Btn clicked: " + getBtnText());
+    public void render(Canvas canvas) {
+        canvas.drawRect(containerRect, this.innerPaint);
+//        canvas.drawRect(innerRect, this.innerPaint);
+        canvas.drawText(this.btnText, this.getXPos(), this.getYPos() + ((this.getPaint().descent() - this.getPaint().ascent()) / 2), this.getPaint());
     }
 
     public String getBtnText() {
         return btnText;
-    }
-
-    public void setBtnText(String btnText) {
-        this.btnText = btnText;
     }
 }

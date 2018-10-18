@@ -15,7 +15,9 @@ import android.view.View;
 
 import java.io.IOException;
 
+import tguillouet.itescia.GameObject.Asset;
 import tguillouet.itescia.GameObject.Ball;
+import tguillouet.itescia.GameObject.Button;
 import tguillouet.itescia.GameObject.Player;
 import tguillouet.itescia.GameObject.Text;
 
@@ -29,13 +31,19 @@ public class GameView extends View implements View.OnTouchListener {
     private Player player2;
     private Text player2Score;
     private Ball ball;
+    private Button pauseBtn;
+
+    /* Win screen */
     private Text winText;
+    private Text subText;
 
     /* Utils */
     private Paint p = new Paint();
     private DisplayMetrics metrics;
     private MediaPlayer mp = new MediaPlayer();
     private Vibrator vibration;
+
+    private Integer maxScore = 1;
 
     public GameView(Context context) {
         super(context);
@@ -86,8 +94,10 @@ public class GameView extends View implements View.OnTouchListener {
         ball = new Ball(40,40, 350, this.getHalfHeight() - 20, p);
         ball.setDirection(-1, 1);
 
-
         winText = new Text("", this.getHalfWidth() / 2, this.getHalfHeight(), 160, context);
+        subText = new Text("Tap anywhere to restart", this.getHalfWidth() / 2, this.getHalfHeight() + 70, 60, context);
+
+        pauseBtn = new Button("||", this.getHalfWidth(), this.getH() - 150, 240, 120, 100, context);
 
     }
 
@@ -97,10 +107,21 @@ public class GameView extends View implements View.OnTouchListener {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                if (!gamePaused) updatePlayers(event);
-                else {
+                if (pauseBtn.getTouch(event)) {
+                    if (!gamePaused) {
+                        ball.setSpeed(0);
+                        winText.setText("Paused");
+                        subText.setText("Tap on pause button to resume");
+                        this.gamePaused = true;
+                    } else {
+                        ball.setSpeed(15);
+                        this.gamePaused = false;
+                    }
+                } else if (!gamePaused) updatePlayers(event);
+                else if (gamePaused && (player1.getScore() == this.maxScore || player2.getScore() == this.maxScore)) {
                     unpauseGame();
                     resetGame();
+                    invalidate();
                 }
                 break;
         }
@@ -137,6 +158,8 @@ public class GameView extends View implements View.OnTouchListener {
     private void resetGame() {
         player1.setScore(0);
         player2.setScore(0);
+        player1Score.setText("0");
+        player2Score.setText("0");
         resetBall(player1, "right");
         resetPlayersPos();
     }
@@ -145,19 +168,28 @@ public class GameView extends View implements View.OnTouchListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (player1.getScore() == 10 || player2.getScore() == 10) {
-            String playerName = (player1.getScore() == 1)? player1.getName(): player2.getName();
+        if (player1.getScore() == this.maxScore || player2.getScore() == this.maxScore) {
+            String playerName = (player1.getScore() == this.maxScore)? player1.getName(): player2.getName();
             winText.setText(playerName + " win the game !");
+            subText.setText("Tap anywhere to restart");
+            winText.setXPos(this.getHalfWidth() - Asset.getTextWidth(winText, winText.getPaint()) / 2);
+            subText.setXPos(this.getHalfWidth() - Asset.getTextWidth(subText, subText.getPaint()) / 2);
             winText.render(canvas);
+            subText.render(canvas);
             this.gamePaused = true;
-        }
-
-        if (!gamePaused) {
+        } else {
             player1.render(canvas);
             player2.render(canvas);
             ball.render(canvas);
             player1Score.render(canvas);
             player2Score.render(canvas);
+            pauseBtn.render(canvas);
+            if (gamePaused) {
+                winText.setXPos(this.getHalfWidth() - Asset.getTextWidth(winText, winText.getPaint()) / 2);
+                subText.setXPos(this.getHalfWidth() - Asset.getTextWidth(subText, subText.getPaint()) / 2);
+                winText.render(canvas);
+                subText.render(canvas);
+            }
             checkCollisions();
             invalidate();
         }
@@ -237,9 +269,9 @@ public class GameView extends View implements View.OnTouchListener {
     private void vibrate() {
         vibration = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibration.vibrate(VibrationEffect.createOneShot(50,VibrationEffect.DEFAULT_AMPLITUDE));
+            vibration.vibrate(VibrationEffect.createOneShot(30,VibrationEffect.DEFAULT_AMPLITUDE));
         }else{
-            vibration.vibrate(50);
+            vibration.vibrate(30);
         }
     }
 

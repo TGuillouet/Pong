@@ -1,9 +1,14 @@
 package tguillouet.itescia.Menu;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
+
+import tguillouet.itescia.Game.GameView;
+import tguillouet.itescia.Game.TwoPlayersGameActivity;
 
 public class MenuActivity extends AppCompatActivity {
     @Override
@@ -20,6 +25,9 @@ public class MenuActivity extends AppCompatActivity {
 
         /* The Action Bar / Title Bar is disabled in the styles.xml */
         setContentView(game);
+    }
 
+    public static void toGame(Context context) {
+        context.startActivity(new Intent(context, TwoPlayersGameActivity.class));
     }
 }

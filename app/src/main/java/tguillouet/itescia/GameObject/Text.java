@@ -2,6 +2,8 @@ package tguillouet.itescia.GameObject;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 public class Text extends Asset {
     private String text;
@@ -23,4 +25,5 @@ public class Text extends Asset {
     public void setText(String text) {
         this.text = text;
     }
+
 }
