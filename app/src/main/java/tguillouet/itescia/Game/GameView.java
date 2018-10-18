@@ -9,14 +9,19 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import tguillouet.itescia.GameObject.Asset;
 import tguillouet.itescia.GameObject.Ball;
+import tguillouet.itescia.GameObject.BufferSpeed;
+import tguillouet.itescia.GameObject.BufferZone;
 import tguillouet.itescia.GameObject.Button;
 import tguillouet.itescia.GameObject.Player;
 import tguillouet.itescia.GameObject.Text;
@@ -43,7 +48,9 @@ public class GameView extends View implements View.OnTouchListener {
     private MediaPlayer mp = new MediaPlayer();
     private Vibrator vibration;
 
-    private Integer maxScore = 1;
+    private BufferZone bf;
+
+    private Integer maxScore = 5;
 
     public GameView(Context context) {
         super(context);
@@ -110,6 +117,7 @@ public class GameView extends View implements View.OnTouchListener {
                 if (pauseBtn.getTouch(event)) {
                     if (!gamePaused) {
                         ball.setSpeed(0);
+
                         winText.setText("Paused");
                         subText.setText("Tap on pause button to resume");
                         this.gamePaused = true;
@@ -162,6 +170,8 @@ public class GameView extends View implements View.OnTouchListener {
         player2Score.setText("0");
         resetBall(player1, "right");
         resetPlayersPos();
+        ball.setExchangeCount(0);
+        bf = null;
     }
 
     @Override
@@ -184,6 +194,9 @@ public class GameView extends View implements View.OnTouchListener {
             player1Score.render(canvas);
             player2Score.render(canvas);
             pauseBtn.render(canvas);
+            if (bf != null) {
+                bf.render(canvas);
+            }
             if (gamePaused) {
                 winText.setXPos(this.getHalfWidth() - Asset.getTextWidth(winText, winText.getPaint()) / 2);
                 subText.setXPos(this.getHalfWidth() - Asset.getTextWidth(subText, subText.getPaint()) / 2);
@@ -199,6 +212,13 @@ public class GameView extends View implements View.OnTouchListener {
      * Check the collisions between players, balls and walls
      */
     private void checkCollisions() {
+        if (bf != null) {
+            ball.setBuffType(bf);
+            if (((BufferSpeed) bf).buff(ball)) {
+                bf = null;
+                ball.setExchangeCount(0);
+            }
+        }
         if ((ball.getCenter()[1] >= this.getH()) || (ball.getCenter()[1] <= 0)) {
             ball.setDirection(ball.getDirection()[0], ball.getDirection()[1] * -1); /* We only need to invert Y axis */
         } else if (ball.getCenter()[0] >= this.getW()) {
@@ -215,6 +235,12 @@ public class GameView extends View implements View.OnTouchListener {
             ball.setDirection(ball.getDirection()[0] * -1, ball.getDirection()[1]); /* We only need to invert X axis */
             playSound("pong.mp3");
             vibrate();
+            if (ball.getExchangeCount().equals(2)) {
+                Paint p = new Paint();
+                p.setColor(Color.RED);
+
+                bf = new BufferSpeed(this.random(250, 500, this.getHalfWidth()), this.random(250, 500, this.getHalfHeight()), 120, p);
+            }
         }
     }
 
@@ -242,6 +268,8 @@ public class GameView extends View implements View.OnTouchListener {
         /* Set the new direction of the ball */
         Integer xDir = (!orientation.equals("right"))? ((!orientation.equals("left"))? 1: -1): 1;
         ball.setDirection(xDir, ball.getDirection()[1]);
+
+        ball.setSpeed(15);
     }
 
     /**
@@ -273,6 +301,15 @@ public class GameView extends View implements View.OnTouchListener {
         }else{
             vibration.vibrate(30);
         }
+    }
+
+    private Integer random(Integer min, Integer max, Integer origin) {
+        Random rand = new Random();
+        Integer r = origin;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            r = (origin - min) + rand.nextInt((max) + 1);
+        }
+        return r;
     }
 
     /**

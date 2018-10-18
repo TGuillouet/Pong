@@ -22,6 +22,8 @@ public class Asset {
     private Rect rect;
     private Paint paint;
 
+
+    /* Text constructor */
     public Asset(Context appContext, Integer posX, Integer posY, Integer fontSize) {
         this.xPos = posX;
         this.yPos = posY;
@@ -34,6 +36,7 @@ public class Asset {
         paint.setTypeface(Typeface.createFromAsset(appContext.getAssets(), "fonts/Cave-Story.ttf"));
     }
 
+    /* Button constructor */
     public Asset(Context appContext, Integer posX, Integer posY, Integer fontSize, Integer width, Integer height) {
         this.xPos = posX;
         this.yPos = posY;
@@ -48,6 +51,7 @@ public class Asset {
         paint.setTypeface(Typeface.createFromAsset(appContext.getAssets(), "fonts/Cave-Story.ttf"));
     }
 
+    /* Ball and players */
     public Asset(Integer w, Integer h, Integer posX, Integer posY, Paint paint) {
         this.w = w;
         this.h = h;
@@ -58,6 +62,21 @@ public class Asset {
         this.paint = paint;
 
         init();
+    }
+
+    /* Buffers */
+    public Asset(Integer xPos, Integer yPos, Integer size, Paint paint) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.basePosX = xPos;
+        this.basePosY = yPos;
+        this.w = size;
+        this.h = size;
+
+        this.paint = new Paint();
+        this.rect = new Rect(xPos - (w / 2), yPos - (h / 2), xPos + (w / 2), yPos + (h / 2));
+
+        this.paint = paint;
     }
 
     private void init() {
