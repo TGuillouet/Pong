@@ -91,20 +91,20 @@ public class GameView extends View implements View.OnTouchListener {
      */
     private void initAssets(Context context) {
         /* Init players */
-        player1 = new Player("Player 1", 40, 200, 300, this.getHalfHeight(), p);
-        player1Score = new Text("0", this.getHalfWidth() - 200, 120, 200, context);
+        player1 = new Player("Player 1",  percentWidth(2f), percentHeight(20f), percentWidth(15f), this.getHalfHeight(), p);
+        player1Score = new Text("0", this.getHalfWidth() - percentWidth(5f),  percentHeight(11f), percentHeight(20f), context);
 
-        player2 = new Player("Player 2",40, 200, this.getW() - 300, this.getHalfHeight(), p);
-        player2Score = new Text("0", this.getHalfWidth() + 100, 120, 200, context);
+        player2 = new Player("Player 2",percentWidth(2f),  percentHeight(20f), this.getW() - percentWidth(15f), this.getHalfHeight(), p);
+        player2Score = new Text("0", this.getHalfWidth() + percentWidth(5f), percentHeight(11f), percentHeight(20f), context);
 
         /* Init ball */
-        ball = new Ball(40,40, 350, this.getHalfHeight() - 20, p);
+        ball = new Ball(percentWidth(2f), percentHeight(4f), percentWidth(18f), this.getHalfHeight() - percentHeight(2f), p, scaledSpeed(1.3f));
         ball.setDirection(-1, 1);
 
-        winText = new Text("", this.getHalfWidth() / 2, this.getHalfHeight(), 160, context);
-        subText = new Text("Tap anywhere to restart", this.getHalfWidth() / 2, this.getHalfHeight() + 70, 60, context);
+        winText = new Text("", this.getHalfWidth() / 2, this.getHalfHeight(), percentHeight(15f), context);
+        subText = new Text("Tap anywhere to restart", this.getHalfWidth() / 2, this.getHalfHeight() + percentHeight(7f), percentHeight(6f), context);
 
-        pauseBtn = new Button("||", this.getHalfWidth(), this.getH() - 150, 240, 120, 100, context);
+        pauseBtn = new Button("||", this.getHalfWidth(), this.getH() - percentHeight(14f), percentWidth(13f), percentHeight(11f), percentHeight(10f), context);
 
     }
 
@@ -122,7 +122,7 @@ public class GameView extends View implements View.OnTouchListener {
                         subText.setText("Tap on pause button to resume");
                         this.gamePaused = true;
                     } else {
-                        ball.setSpeed(15);
+                        ball.setSpeed(scaledSpeed(1.3f));
                         this.gamePaused = false;
                     }
                 } else if (!gamePaused) updatePlayers(event);
@@ -190,13 +190,13 @@ public class GameView extends View implements View.OnTouchListener {
         } else {
             player1.render(canvas);
             player2.render(canvas);
+            if (bf != null) {
+                bf.render(canvas);
+            }
             ball.render(canvas);
             player1Score.render(canvas);
             player2Score.render(canvas);
             pauseBtn.render(canvas);
-            if (bf != null) {
-                bf.render(canvas);
-            }
             if (gamePaused) {
                 winText.setXPos(this.getHalfWidth() - Asset.getTextWidth(winText, winText.getPaint()) / 2);
                 subText.setXPos(this.getHalfWidth() - Asset.getTextWidth(subText, subText.getPaint()) / 2);
@@ -237,9 +237,9 @@ public class GameView extends View implements View.OnTouchListener {
             vibrate();
             if (ball.getExchangeCount().equals(2)) {
                 Paint p = new Paint();
-                p.setColor(Color.RED);
+                p.setColor(Color.rgb(231, 117, 0));
 
-                bf = new BufferSpeed(this.random(250, 500, this.getHalfWidth()), this.random(250, 500, this.getHalfHeight()), 120, p);
+                bf = new BufferSpeed(this.random(percentWidth(13f), percentWidth(26f), this.getHalfWidth()), this.random(percentWidth(13f), percentWidth(26f), this.getHalfHeight()), percentHeight(11f), p);
             }
         }
     }
@@ -261,7 +261,7 @@ public class GameView extends View implements View.OnTouchListener {
      */
     private void resetBall(Player player, String orientation) {
         /* Reset the position of the ball */
-        Integer offset = (!orientation.equals("right"))? ((!orientation.equals("left"))? 50: -50): 50;
+        Integer offset = (!orientation.equals("right"))? ((!orientation.equals("left"))? percentWidth(3f): -percentWidth(3f)): percentWidth(3f);
         ball.setXPos(player.getXPos() + offset);
         ball.setYPos(this.getHalfHeight() - (ball.getAssetWidth() / 2));
 
@@ -269,7 +269,7 @@ public class GameView extends View implements View.OnTouchListener {
         Integer xDir = (!orientation.equals("right"))? ((!orientation.equals("left"))? 1: -1): 1;
         ball.setDirection(xDir, ball.getDirection()[1]);
 
-        ball.setSpeed(15);
+        ball.setSpeed(scaledSpeed(1.3f));
     }
 
     /**
@@ -310,6 +310,18 @@ public class GameView extends View implements View.OnTouchListener {
             r = (origin - min) + rand.nextInt((max) + 1);
         }
         return r;
+    }
+
+    private Integer percentWidth(Float percent) {
+        return Math.round((percent / 100) * this.getW());
+    }
+
+    private Integer percentHeight(Float percent) {
+        return Math.round((percent / 100) * this.getH());
+    }
+
+    private Integer scaledSpeed(Float percentSpeed) {
+        return Math.round((percentSpeed / 100) * this.getH());
     }
 
     /**

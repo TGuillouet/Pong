@@ -12,7 +12,7 @@ public class BufferSpeed extends BufferZone {
 
     public Boolean buff(Ball ball) {
         if (ball.getRect().intersect(this.getRect())) {
-            Integer newSpeed = ball.getSpeed() + 15;
+            Integer newSpeed = Math.round(ball.getSpeed() * 1.7f);
             ball.setSpeed(newSpeed);
             ball.setBuffed(true);
             return true;

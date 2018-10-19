@@ -10,15 +10,18 @@ public class Ball extends Asset {
 
     private Integer directionX;
     private Integer directionY;
-    private Integer speed = 15;
+    private Integer speed;
+    private Integer baseSpeed;
 
     private Boolean isBuffed = false;
     private Buff buffType = NONE;
 
     private Integer exchangeCount = 0;
 
-    public Ball(Integer w, Integer h, Integer posX, Integer posY, Paint paint) {
+    public Ball(Integer w, Integer h, Integer posX, Integer posY, Paint paint, Integer baseSpeed) {
         super(w, h, posX, posY, paint);
+        this.speed = baseSpeed;
+        this.baseSpeed = baseSpeed;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class Ball extends Asset {
             if (this.isBuffed) {
                 switch (this.buffType) {
                     case SPEED:
-                        this.setSpeed(15);
+                        this.setSpeed(this.baseSpeed);
                         this.setBuffType(Buff.NONE);
                         break;
                     default:

@@ -28,6 +28,8 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public static void toGame(Context context) {
-        context.startActivity(new Intent(context, TwoPlayersGameActivity.class));
+        Intent i = new Intent(context, TwoPlayersGameActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(i);
     }
 }
