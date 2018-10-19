@@ -96,11 +96,11 @@ public class Ball extends Asset {
     }
 
     public void setBuffType(BufferZone buffzone) {
-        Buff buff = null;
-        if (buffzone instanceof BufferSpeed) {
-            buff = ((BufferSpeed) buffzone).getBuffType();
-        }
-        this.buffType = buff;
+//        Buff buff = null;
+//        if (buffzone instanceof BufferSpeed) {
+//            buff = ((BufferSpeed) buffzone).getBuffType();
+//        }
+        this.buffType = buffzone.getBuffType();
     }
 
     public void setBuffType(Buff buff) {

@@ -50,7 +50,7 @@ public class GameView extends View implements View.OnTouchListener {
 
     private BufferZone bf;
 
-    private Integer maxScore = 5;
+    private Integer maxScore = 10;
 
     public GameView(Context context) {
         super(context);
@@ -212,13 +212,7 @@ public class GameView extends View implements View.OnTouchListener {
      * Check the collisions between players, balls and walls
      */
     private void checkCollisions() {
-        if (bf != null) {
-            ball.setBuffType(bf);
-            if (((BufferSpeed) bf).buff(ball)) {
-                bf = null;
-                ball.setExchangeCount(0);
-            }
-        }
+        applyBuff();
         if ((ball.getCenter()[1] >= this.getH()) || (ball.getCenter()[1] <= 0)) {
             ball.setDirection(ball.getDirection()[0], ball.getDirection()[1] * -1); /* We only need to invert Y axis */
         } else if (ball.getCenter()[0] >= this.getW()) {
@@ -235,12 +229,21 @@ public class GameView extends View implements View.OnTouchListener {
             ball.setDirection(ball.getDirection()[0] * -1, ball.getDirection()[1]); /* We only need to invert X axis */
             playSound("pong.mp3");
             vibrate();
-            if (ball.getExchangeCount().equals(2)) {
+            if (ball.getExchangeCount().equals(6)) {
                 Paint p = new Paint();
                 p.setColor(Color.rgb(231, 117, 0));
-
                 bf = new BufferSpeed(this.random(percentWidth(13f), percentWidth(26f), this.getHalfWidth()), this.random(percentWidth(13f), percentWidth(26f), this.getHalfHeight()), percentHeight(11f), p);
             }
+        }
+    }
+
+    private void applyBuff() {
+        if (bf != null) {
+            ball.setBuffType(bf);
+            if (((BufferSpeed) bf).buff(ball)) {
+                bf = null;
+            }
+            ball.setExchangeCount(0);
         }
     }
 

@@ -4,10 +4,9 @@ import android.graphics.Paint;
 
 public class BufferSpeed extends BufferZone {
 
-    private Buff buffType = Buff.SPEED;
-
     public BufferSpeed(Integer xPos, Integer yPos, Integer size, Paint paint) {
         super(xPos, yPos, size, paint);
+        this.setBuffType(Buff.SPEED);
     }
 
     public Boolean buff(Ball ball) {
@@ -20,7 +19,4 @@ public class BufferSpeed extends BufferZone {
         return false;
     }
 
-    public Buff getBuffType() {
-        return buffType;
-    }
 }
